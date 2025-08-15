@@ -1,0 +1,39 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Link;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Link>
+ */
+class LinkFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+
+    protected $model = Link::class;
+
+    public function definition(): array
+    {
+        $user = User::inRandomOrder()->first();
+
+        return [
+            'original_url' => $this->faker->url,
+            'short_url' => $this->generateShortUrl(),
+            'expires_at' => $this->faker->dateTimeBetween('now', '+1 year'),
+            'clicks_count' => $this->faker->numberBetween(0, 1000),
+            'code_user' => $user->id ?? null,
+        ];
+    }
+
+    private function generateShortUrl(): string
+    {
+        return '';
+    }
+}
