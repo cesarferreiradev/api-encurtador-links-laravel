@@ -23,7 +23,18 @@ class LinkController extends Controller
      */
     public function store(StoreLinkRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['short_url'] = '';
+
+        $link = Link::create($data);
+
+        if ($link) {
+            return $link->toResource();
+        }
+
+        return response([
+            'message' => 'Failed to create link.'
+        ], 422);
     }
 
     /**
