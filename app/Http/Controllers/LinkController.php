@@ -4,10 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreLinkRequest;
 use App\Http\Requests\UpdateLinkRequest;
+use App\Jobs\ProcessLinkJob;
 use App\Models\Link;
+use App\Services\LinkService;
 
 class LinkController extends Controller
 {
+    public function __construct(protected LinkService $linkService)
+    {
+
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -24,17 +31,17 @@ class LinkController extends Controller
     public function store(StoreLinkRequest $request)
     {
         $data = $request->validated();
-        $data['short_url'] = '';
 
-        $link = Link::create($data);
+        $data['short_url'] = $this->linkService->shorten($data['original_url']);
 
-        if ($link) {
-            return $link->toResource();
-        }
+        ProcessLinkJob::dispatch($data)->onQueue('database');
 
-        return response([
-            'message' => 'Failed to create link.'
-        ], 422);
+        $url = url('/'.$data['short_url']);
+
+        return response()->json([
+            'message'   => 'O link está sendo processado.',
+            'short_url' => $url,
+        ], 202);
     }
 
     /**
