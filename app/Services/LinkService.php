@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use App\Models\Link;
 use Sqids\Sqids;
 
 class LinkService
@@ -14,9 +15,13 @@ class LinkService
         );
     }
 
-    public function shorten(string $url)
+    public function shorten(string $url): string
     {
-        return $this->sqids->encode([rand(1,100), crc32($url)]);
+        do {
+            $hash = $this->sqids->encode([rand(1,100), crc32($url)]);
+        } while (Link::where('short_url', $hash)->exists());
+
+        return $hash;
     }
 
     public function resolve(string $code)
