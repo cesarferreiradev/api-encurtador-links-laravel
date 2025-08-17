@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\AcessLinkJob;
 use App\Models\Link;
 use App\Services\LinkService;
 use Illuminate\Http\Request;
@@ -15,6 +16,15 @@ class RedirectController extends Controller
     public function redirect($link)
     {
         $link = Link::where('short_url', $link)->firstOrFail();
+
+        $data = [
+            'link_id'    => $link->id_link,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'referer'    => request()->header('referer'),
+        ];
+
+        AcessLinkJob::dispatch($data)->onQueue('database');
 
         return redirect($link->original_url);
     }
