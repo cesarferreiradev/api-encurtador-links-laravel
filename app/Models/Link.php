@@ -19,4 +19,9 @@ class Link extends Model
         'expires_at',
         'code_user'
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'short_url';
+    }
 }

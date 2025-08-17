@@ -21,7 +21,7 @@ class LinkController extends Controller
     {
         $page = request()->input('page', 1);
 
-        return Link::where('code_user', auth('sanctum')->user()->id)
+        return Link::where('code_user', auth('sanctum')->id())
             ->paginate(20, ['*'], 'page', $page)->toResourceCollection();
     }
 
@@ -49,7 +49,14 @@ class LinkController extends Controller
      */
     public function show(Link $link)
     {
-        //
+        if ($link->code_user != auth('sanctum')->id()) {
+            return response()->json([
+                'message' => 'link não encontrado',
+                'status' => 404,
+            ], 404);
+        }
+
+        return $link->toResource();
     }
 
     /**

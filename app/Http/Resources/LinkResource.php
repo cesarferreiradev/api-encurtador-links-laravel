@@ -17,7 +17,7 @@ class LinkResource extends JsonResource
         return [
             'id'         => $this->id_link,
             'link'       => $this->original_url,
-            'short'      => $this->_url,
+            'short'      => $this->short_url,
             'expires_at' => $this->expires_at,
             'clicks'     => $this->clicks_count,
             'user_id'    => $this->code_user
