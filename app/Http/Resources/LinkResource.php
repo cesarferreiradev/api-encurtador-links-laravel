@@ -19,7 +19,6 @@ class LinkResource extends JsonResource
             'link'       => $this->original_url,
             'short'      => $this->short_url,
             'expires_at' => $this->expires_at,
-            'clicks'     => $this->clicks_count,
             'user_id'    => $this->code_user
         ];
     }

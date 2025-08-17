@@ -6,7 +6,10 @@ use App\Http\Requests\StoreLinkRequest;
 use App\Http\Requests\UpdateLinkRequest;
 use App\Jobs\ProcessLinkJob;
 use App\Models\Link;
+use App\Models\LinkClick;
 use App\Services\LinkService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class LinkController extends Controller
 {
@@ -64,7 +67,37 @@ class LinkController extends Controller
      */
     public function update(UpdateLinkRequest $request, Link $link)
     {
-        //
+        if ($link->code_user != auth('sanctum')->id()) {
+            return response()->json([
+                'message' => 'link não encontrado',
+                'status' => 404,
+            ], 404);
+        }
+
+        $data = $request->validated();
+
+        if (isset($data['original_url'])) {
+            $link->originaL_url = $data['original_url'];
+            $link->short_url = $this->linkService->shorten($data['original_url']);
+        }
+
+        if (isset($data['expires_at'])) {
+            $link->expires_at = $data['expires_at'];
+        }
+
+        $update = $link->save();
+
+        if ($update) {
+            return response()->json([
+                'message' => 'Link atualizado com sucesso.',
+                'status' => 200,
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Erro ao atualizar link.',
+            'status' => 500,
+        ], 500);
     }
 
     /**
@@ -72,6 +105,38 @@ class LinkController extends Controller
      */
     public function destroy(Link $link)
     {
-        //
+        if ($link->code_user != auth('sanctum')->id()) {
+            return response()->json([
+                'message' => 'link não encontrado',
+                'status' => 404,
+            ], 404);
+        }
+
+        DB::beginTransaction();
+
+        $removeClicks = LinkClick::where('link_id', $link->id_link)->delete();
+        $remove = $link->delete();
+
+        if ($remove) {
+
+            DB::commit();
+
+            Log::debug('Link excluído', [
+                'link' => $link,
+                'removeClicks' => $removeClicks,
+            ]);
+
+            return response()->json([
+                'message' => 'Link removido com sucesso.',
+                'status' => 200
+            ]);
+        }
+
+        DB::rollBack();
+
+        return response()->json([
+            'message' => 'Erro ao remover link.',
+            'status' => 500
+        ], 500);
     }
 }
