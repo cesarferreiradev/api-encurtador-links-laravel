@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Link;
 use App\Models\User;
+use App\Services\LinkService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,18 +22,15 @@ class LinkFactory extends Factory
 
     public function definition(): array
     {
+        $linkService = app(LinkService::class);
+
         $user = User::inRandomOrder()->first();
 
         return [
             'original_url' => $this->faker->url,
-            'short_url' => $this->generateShortUrl(),
-            'expires_at' => $this->faker->dateTimeBetween('now', '+1 year'),
-            'code_user' => $user->id ?? null,
+            'short_url'    => $linkService->shorten($this->faker->url),
+            'expires_at'   => $this->faker->dateTimeBetween('now', '+1 year'),
+            'code_user'    => $user->id ?? null,
         ];
-    }
-
-    private function generateShortUrl(): string
-    {
-        return '';
     }
 }
