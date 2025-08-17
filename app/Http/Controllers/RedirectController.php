@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\AcessLinkJob;
 use App\Models\Link;
 use App\Services\LinkService;
-use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class RedirectController extends Controller
 {
@@ -15,7 +15,12 @@ class RedirectController extends Controller
 
     public function redirect($short)
     {
-        $link = Link::where('short_url', $short)->firstOrFail();
+        $link = Link::where('short_url', $short)
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                    ->orWhereDate('expires_at', '>=', Carbon::today());
+            })
+            ->firstOrFail();
 
         $data = [
             'link_id'    => $link->id_link,
