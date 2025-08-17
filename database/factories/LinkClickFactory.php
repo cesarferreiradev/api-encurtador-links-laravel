@@ -23,8 +23,7 @@ class LinkClickFactory extends Factory
             'link_id'    => $idLink,
             'ip_address' => $this->faker->ipv4(),
             'user_agent' => $this->faker->userAgent(),
-            'referer'    => $this->faker->url(),
-            'clicked_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
+            'referer'    => $this->faker->url()
         ];
     }
 }
