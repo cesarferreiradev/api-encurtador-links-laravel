@@ -21,7 +21,8 @@ class LinkController extends Controller
     {
         $page = request()->input('page', 1);
 
-        return Link::paginate(20, ['*'], 'page', $page)->toResourceCollection();
+        return Link::where('code_user', auth('sanctum')->user()->id)
+            ->paginate(20, ['*'], 'page', $page)->toResourceCollection();
     }
 
     /**
