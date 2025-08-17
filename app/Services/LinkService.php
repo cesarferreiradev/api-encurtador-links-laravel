@@ -24,11 +24,6 @@ class LinkService
         return $hash;
     }
 
-    public function resolve(string $code)
-    {
-
-    }
-
     public function registerClick(string $code)
     {
 
