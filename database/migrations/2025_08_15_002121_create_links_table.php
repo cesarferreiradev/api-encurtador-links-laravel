@@ -16,7 +16,6 @@ return new class extends Migration
             $table->text('original_url');
             $table->string('short_url');
             $table->dateTime('expires_at')->nullable();
-            $table->integer('clicks_count')->default(0);
             $table->bigInteger('code_user')->unsigned()->nullable();
             $table->string('status', 120)->default('active');
             $table->timestamps();

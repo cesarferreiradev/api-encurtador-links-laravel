@@ -27,7 +27,6 @@ class LinkFactory extends Factory
             'original_url' => $this->faker->url,
             'short_url' => $this->generateShortUrl(),
             'expires_at' => $this->faker->dateTimeBetween('now', '+1 year'),
-            'clicks_count' => $this->faker->numberBetween(0, 1000),
             'code_user' => $user->id ?? null,
         ];
     }

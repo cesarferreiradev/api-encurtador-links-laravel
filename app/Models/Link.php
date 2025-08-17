@@ -17,7 +17,6 @@ class Link extends Model
         'original_url',
         'short_url',
         'expires_at',
-        'clicks_count',
         'code_user'
     ];
 }
