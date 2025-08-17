@@ -13,9 +13,9 @@ class RedirectController extends Controller
     {
     }
 
-    public function redirect($link)
+    public function redirect($short)
     {
-        $link = Link::where('short_url', $link)->firstOrFail();
+        $link = Link::where('short_url', $short)->firstOrFail();
 
         $data = [
             'link_id'    => $link->id_link,
