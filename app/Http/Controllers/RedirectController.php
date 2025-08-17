@@ -16,6 +16,7 @@ class RedirectController extends Controller
     public function redirect($short)
     {
         $link = Link::where('short_url', $short)
+            ->where('status', 'active')
             ->where(function ($query) {
                 $query->whereNull('expires_at')
                     ->orWhereDate('expires_at', '>=', Carbon::today());
