@@ -36,7 +36,7 @@ class LinkController extends Controller
 
         ProcessLinkJob::dispatch($data)->onQueue('database');
 
-        $url = url('/'.$data['short_url']);
+        $url = url('/api/'.$data['short_url']);
 
         return response()->json([
             'message'   => 'O link está sendo processado.',
